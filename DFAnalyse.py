@@ -10,30 +10,30 @@ class Analyse(object):
         self.df = df
         self.keys = list(df)
         self.length = len(df)
-    
+
     def get_keys(self):
         return self.keys
-    
+
     def get_len(self):
         return self.length
-    
+
     def get_type(self, key):
         return type(self.df[key][0])
-    
+
     def col_list(self, key):
         return list(self.df[key])
-    
+
     def str2list(self, col):
         if type(self.df[col][0]) == str:
             for i,l in enumerate(self.df[col]):
-                self.df.at[i, con] = ast.literal_eval(l)
-    
-    def where(self, constrains={"rating":[6, 'more'], "runtime":[100, 'more']}):
+                self.df.at[i, col] = ast.literal_eval(l)
+
+    def where(self, contrains):
         '''
         Use more, less, not or equal for ints, floats and strs... ect
         Use in and out for list or list_string
         '''
-        for con in constrains:
+        for con in contrains:
             if not constrains[con][1] in "not in":
                 if constrains[con][1] == 'more':
                     self.df = self.df.loc[df[con] > constrains[con][0]]
@@ -52,15 +52,15 @@ class Analyse(object):
                     ies = [i for i in range(len(self.df)) if constrains[con][0] in self.df.at[i, con]]
                     self.df = self.df.iloc[ies]
         self.length = len(self.df)
-    
+
     def select_list(self, col, list_quant):
         self.df = self.df.loc[df[col].isin(list_quant)]
         self.length = len(self.df)
-    
+
     def avg(self, col):
         the_list = list(self.df[col])
         return (sum(the_list)/len(the_list))
-    
+
     def count_all(self, key):
         counts = {}
         for item in self.col_list(key):
@@ -68,7 +68,7 @@ class Analyse(object):
                 counts[item] += 1
             else:
                 counts[item] = 1
-    
+
     def of_each(self, itter, height, avg = False):
         units = set(list(df[itter]))
         heights = []
@@ -79,10 +79,10 @@ class Analyse(object):
                 bar = sum(bar)/len(bar)
             else:
                 bar = sum(bar)
-                
+
             heights.append(bar)
         return heights, units
-    
+
     def list_count(self, key):
         '''
         for genre and actors
@@ -99,9 +99,9 @@ class Analyse(object):
 
     def list_avg(self, key = 'genre', eva = 'rating'):
         first_dict = {}
-        
+
         self.str2list(key)
-                
+
         for genres, other in zip(list(self.df[key]),list(self.df[eva])):
             for single_g in genres:
                 single_g = single_g.strip()
@@ -113,7 +113,7 @@ class Analyse(object):
 
         for genre in first_dict:
             first_dict[genre].append(first_dict[genre][0]/first_dict[genre][1])
-        
+
         return first_dict
 
 #### EXTRA ########################################################################################
@@ -126,8 +126,8 @@ def max_of_dict(d, ith = None):
         value = max([d[k][ith] for k in d])
         full_val = [val for val in d.values() if value in val]
         key_value = list(d.keys())[list(d.values()).index(full_val[0])]
-        
-    
+
+
     return key_value, value
 
 def estimate_line(x,y):
@@ -153,7 +153,7 @@ def estimate_line(x,y):
     plt.ylim([0,10])
     plt.title(f'We estimated the followig line: (Slope: {round(slope, 8)}, Start: {round(intercept,2)})', fontsize=18)
     plt.show()
-    
+
     return xd, yd, xl, yl
 
 def error(ox, oy, ex, ey):
@@ -162,7 +162,7 @@ def error(ox, oy, ex, ey):
     """
     error_abs = [abs(rate - ey[ex.index(vote)]) for vote, rate in zip(ox[:-1],oy[:-1])]
     error = [(rate - ey[ex.index(vote)]) for vote, rate in zip(ox[:-1],oy[:-1])]
-    
+
     return error_abs, error
 
 def print_error(error_abs, error):

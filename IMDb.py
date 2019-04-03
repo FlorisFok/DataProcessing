@@ -21,13 +21,26 @@ def get_soup(url):
     '''
     Fetch soup from cerrtain url.
     '''
+    # Make request
     try:
-        source_code = requests.get(url)
+        req = requests.get(url)
+    # In case of error
     except requests.exceptions.RequestException as e:
         print(e)
         sys.exit(1)
 
-    plain_text = source_code.text
+    # Dubble check request status.
+    if not req.ok:
+        print("connection is not OK")
+        sys.exit(1)
+    if not 'html' in source_code.headers['Content-Type'].lower():
+        print("No HTML found")
+        sys.exit(1)
+    if req.encoding.lower() != 'utf-8':
+        print("Encoding is not UTF-8, some features may not work")
+
+    # Read content and parse htlm to soup
+    plain_text = req.text
     soup = BeautifulSoup(plain_text, 'html.parser')
 
     return soup
@@ -36,7 +49,9 @@ def movie_page_list(soup, page_num):
     '''
     Finds movie discriptions
     '''
+    # Select all the movie containers
     one_page = soup.find_all('div', {'class': 'lister-item-content'})
+    # If less than the page lenght is scaped, give a heads up
     if not len(one_page) == PAGE_LEN and len(one_page) != 0:
         print(f"Page {page_num}, only found {len(one_page)} movies")
     return one_page
@@ -98,17 +113,17 @@ def main():
     page_num = 1;
 
     # Scrape till there's nothing more to scrape
-    while True:	
+    while True:
         # Make new url, with right page notation
         page = ((page_num-1) * PAGE_LEN) + 1
         url_page = f"start={page}&ref_=adv_nxt"
         url = url_begin + url_search + url_date + url_votes + url_sort + url_page
-        
+
         # Scrape a page, list all movie elements
         print(page_num, page, end="\r")
         soup = get_soup(url)
         one_page = movie_page_list(soup, page_num)
-        
+
         # Stop scraper when no movies are in the page
         if len(one_page) != 0:
             break
@@ -117,8 +132,8 @@ def main():
         for movie in one_page:
             DICT_LIST.append(make_dict(movie))
         page_num += 1
-    
-    # Make df    
+
+    # Make df
     df = pandas.DataFrame(DICT_LIST)
     print(f"Stopped at page {page_num}")
     # Save to csv
