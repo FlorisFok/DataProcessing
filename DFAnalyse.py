@@ -3,6 +3,7 @@ import sys
 import matplotlib.pyplot as plt
 import numpy as np
 import ast
+from mpl_toolkits.mplot3d import Axes3D
 
 class Analyse(object):
 
@@ -13,6 +14,9 @@ class Analyse(object):
 
     def get_keys(self):
         return self.keys
+
+    def dataframe(self):
+        return self.df
 
     def get_len(self):
         return self.length
@@ -28,15 +32,15 @@ class Analyse(object):
             for i,l in enumerate(self.df[col]):
                 self.df.at[i, col] = ast.literal_eval(l)
 
-    def where(self, contrains):
+    def where(self, constrains):
         '''
         Use more, less, not or equal for ints, floats and strs... ect
         Use in and out for list or list_string
         '''
-        for con in contrains:
+        for con in constrains:
             if not constrains[con][1] in "not in":
                 if constrains[con][1] == 'more':
-                    self.df = self.df.loc[df[con] > constrains[con][0]]
+                    self.df = self.df.loc[self.df[con] > constrains[con][0]]
                 elif constrains[con][1] == 'less':
                     self.df = self.df.loc[self.df[con] < constrains[con][0]]
                 elif constrains[con][1] == 'not':
@@ -68,20 +72,21 @@ class Analyse(object):
                 counts[item] += 1
             else:
                 counts[item] = 1
+        return counts
 
-    def of_each(self, itter, height, avg = False):
-        units = set(list(df[itter]))
+    def of_each_year(self, parameter, avg = False):
+        units = set(list(self.df['year']))
         heights = []
         for unit in units:
-            bar = df.loc[df[itter] == unit]
-            bar = bar[height]
+            bar = self.df.loc[self.df['year'] == unit]
+            bar = bar[parameter]
             if avg:
                 bar = sum(bar)/len(bar)
             else:
                 bar = sum(bar)
 
             heights.append(bar)
-        return heights, units
+        return heights, list(units)
 
     def list_count(self, key):
         '''
@@ -144,19 +149,9 @@ def estimate_line(x,y):
     xl = range(int(min(xd)), int(max(xd)))
     yl = [slope*xx + intercept  for xx in xl]
 
-
-    fig = plt.figure(figsize=(15,10))
-    plt.scatter(x,y)
-    plt.plot(xl, yl, '-r', linewidth=3)
-    plt.xlabel('x_values', fontsize=18)
-    plt.ylabel('y_values', fontsize=18)
-    plt.ylim([0,10])
-    plt.title(f'We estimated the followig line: (Slope: {round(slope, 8)}, Start: {round(intercept,2)})', fontsize=18)
-    plt.show()
-
     return xd, yd, xl, yl
 
-def error(ox, oy, ex, ey):
+def cal_error(ox, oy, ex, ey):
     """
     Error calculation, input: original and estimated x / y.
     """
@@ -195,3 +190,66 @@ def where(self, constrains = {"rating":[6, 'more'], "runtime":[100, 'more']}):
                 ies = [i for i in range(len(df)) if constrains[con][0] in df.at[i, con]]
                 df = df.iloc[ies]
     return df
+
+def main():
+    plt.figure(figsize=(15,10))
+    plt.subplot(221)
+    df = pandas.read_csv(r"C:\Users\s147057\Documents\GitHub\DataProcessing\IMDb.csv")
+    A = Analyse(df)
+    data = A.of_each_year('rating', True)
+    avg = sum(data[0])/len(data[0])
+    plt.plot([min(data[1]) - 1, max(data[1]) + 1], [avg]*2, color='red', label='All time Average')
+    plt.bar(data[1], data[0], width=0.8, bottom=None, align='center', label='Average of year')
+    plt.ylim([min(data[0])*0.90,max(data[0])*1.1])
+    plt.xticks(data[1], rotation=45)
+    plt.legend()
+    plt.title('Average/year', fontsize=18, fontweight="bold")
+    plt.ylabel("Score", fontsize=18)
+
+    df = pandas.read_csv(r"C:\Users\s147057\Documents\GitHub\DataProcessing\IMDb.csv")
+    A = Analyse(df)
+    A.where({"genre":["Drama", 'in'], "runtime":[100, 'more'],"rating":[8, 'more'], "year":[2008, 'equal']})
+    frame = A.dataframe()
+    print("Films with genre == drama, runtime > 100, rating > 8 and from the year 2008")
+    for i in range(len(frame)):
+        print(frame.iloc[i,:])
+
+    df = pandas.read_csv(r"C:\Users\s147057\Documents\GitHub\DataProcessing\IMDb.csv")
+    A = Analyse(df)
+    x = A.col_list("votes")
+    y = A.col_list("rating")
+    ox, oy, ex, ey = estimate_line(x,y)
+    plt.subplot(222)
+    plt.scatter(ox, oy)
+    plt.plot(ex, ey, '-r', linewidth=3)
+    plt.xlabel('Votes', fontsize=18)
+    plt.ylabel('Score', fontsize=18)
+    plt.ylim([0,10])
+    plt.title(f'Estimate trend of vote/score', fontsize=18, fontweight="bold")
+    error_abs, error = cal_error(ox, oy, ex, ey)
+    print_error(error_abs, error)
+
+    plt.subplot(223)
+    df = pandas.read_csv(r"C:\Users\s147057\Documents\GitHub\DataProcessing\IMDb.csv")
+    A = Analyse(df)
+    data = A.list_count('genre')
+    plt.bar(data.keys(), data.values(), width=0.8, bottom=None, align='center')
+    plt.ylim([min(data.values())*0.90,max(data.values())*1.1])
+    plt.xticks(list(data.keys()), rotation=90)
+    plt.title("Number of movies/genre", fontsize=18, fontweight="bold")
+    plt.ylabel("Total movies", fontsize=18)
+
+    plt.subplot(224)
+    df = pandas.read_csv(r"C:\Users\s147057\Documents\GitHub\DataProcessing\IMDb.csv")
+    A = Analyse(df)
+    data = A.count_all('year')
+    plt.bar(data.keys(), data.values(), width=0.8, bottom=None, align='center')
+    plt.ylim([min(data.values())*0.90,max(data.values())*1.1])
+    plt.xticks(list(data.keys()), rotation=90)
+    plt.title('Number of movies/year', fontsize=18, fontweight="bold")
+    plt.ylabel("Total movies", fontsize=18)
+
+    plt.tight_layout()
+    plt.show()
+if __name__ == '__main__':
+    main()
