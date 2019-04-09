@@ -1,0 +1,10 @@
+pandas
+sys
+matplotlib
+numpy
+ast
+requests
+bs4
+pandas
+sys
+re
