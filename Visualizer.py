@@ -3,7 +3,6 @@ import sys
 import matplotlib.pyplot as plt
 import numpy as np
 import ast
-from mpl_toolkits.mplot3d import Axes3D
 
 class Analyse(object):
 
