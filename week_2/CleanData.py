@@ -5,6 +5,8 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import json
 
+print('___________\nFor regression bonus, please see my preivious visualization excersize\n_______________')
+
 # Get path and make dataframe
 path = "input.csv"
 df = pd.read_csv(path)
