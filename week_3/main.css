@@ -1,0 +1,16 @@
+body {
+  background-color: #00BFFF;
+}
+
+canvas {
+  padding-left: 100px;
+}
+
+.title {
+  padding-top: 50px;
+  padding-left: 300px;
+}
+
+.info {
+  padding-left: 300px;
+}

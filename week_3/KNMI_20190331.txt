@@ -1,15 +1,4 @@
-# BRON: KONINKLIJK NEDERLANDS METEOROLOGISCH INSTITUUT (KNMI)
-# Opmerking: door stationsverplaatsingen en veranderingen in waarneemmethodieken zijn deze tijdreeksen van dagwaarden mogelijk inhomogeen! Dat betekent dat deze reeks van gemeten waarden niet geschikt is voor trendanalyse. Voor studies naar klimaatverandering verwijzen we naar de gehomogeniseerde reeks maandtemperaturen van De Bilt <http://www.knmi.nl/kennis-en-datacentrum/achtergrond/gehomogeniseerde-reeks-maandtemperaturen-de-bilt> of de Centraal Nederland Temperatuur <http://www.knmi.nl/kennis-en-datacentrum/achtergrond/centraal-nederland-temperatuur-cnt>.
-# 
-# 
-# STN      LON(east)   LAT(north)     ALT(m)  NAME
-# 240:         4.790       52.318      -3.30  SCHIPHOL
-# 
-# YYYYMMDD = Datum (YYYY=jaar MM=maand DD=dag); 
-# FHVEC    = Vectorgemiddelde windsnelheid (in 0.1 m/s). Zie http://www.knmi.nl/kennis-en-datacentrum/achtergrond/klimatologische-brochures-en-boeken; 
-# 
-# STN,YYYYMMDD,FHVEC
-# 
+STN,YYYYMMDD,FHVEC
   240,19920301,   51
   240,19920302,   82
   240,19920303,   82
