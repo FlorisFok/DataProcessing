@@ -48,3 +48,9 @@ data_json = json.dumps(data_dict)
 # Save to file
 with open('data.json', 'w') as f:
     f.write(data_json)
+
+print(max(avg_wind))
+print(min(avg_wind))
+
+print(max(data_minus_total))
+print(min(data_minus_total))
