@@ -1,0 +1,12 @@
+body {
+  background-color: orange;
+}
+
+canvas {
+  padding-left: 100px;
+  padding-top: 50px
+}
+
+.title {
+  padding-left: 100px;
+}
