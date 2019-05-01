@@ -9,8 +9,10 @@ canvas {
 .title {
   padding-top: 50px;
   padding-left: 300px;
+  color:purple;
 }
 
 .info {
   padding-left: 300px;
+  color:green;
 }
