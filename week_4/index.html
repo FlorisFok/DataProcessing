@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+  <head>
+      <!-- Required meta tags -->
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+      <!-- documentation at http://getbootstrap.com/docs/4.1/, alternative themes at https://bootswatch.com/ -->
+      <!-- <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet"> -->
+
+      <!-- Own style sheet -->
+      <link rel="stylesheet" type = "text/css" href="styles.css">
+
+      <!-- Socket IO module & own JavaScript -->
+      <script src="https://d3js.org/d3.v5.min.js"></script>
+      <script src="index.js"></script>
+      <script src="saveSvgAsPng.js"></script>
+
+
+      <!-- Title of page  -->
+      <title>"bar plot"</title>
+
+
+  </head>
+
+
+  <body>
+    <div class="wrapper">
+      <div class="top"><b>Draw your favorite Bar plot </b></div>
+      <div class="left">
+        <p><b>Options</b></p>
+        <p>
+          <button id='resize' value='rect'>Rectangle</button>
+          <button id='resize' value='square'>Square</button>
+        </p>
+        <p>Thickness: <select id="size">
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+          <option value="7">7</option>
+          <option value="10">10</option>
+          <option value="15">15</option>
+          <option value="20">20</option>
+          <option value="30">30</option>
+        </select></p>
+        <p>Color: <select id="color">
+          <option value="red">Red</option>
+          <option value="blue">Blue</option>
+          <option value="green">Green</option>
+          <option value="yellow">Yellow</option>
+          <option value="Black">Black</option>
+          <option value="white">Eraser</option>
+        </select></p>
+        <p>Style: <select id="style">
+          <option value="draw">Draw</option>
+          <option value="line">Line</option>
+          <option value="circle">Circle</option>
+          <option value="square">Rectangle</option>
+        </select></p>
+
+
+        <p><button id='erase'>Erase</button></p>
+        <p><button id='undo'>undo</button></p>
+        </div>
+      <div id='large' class="main"><svg id="main-img" style="width:400px;height:400px;"><rect width="100%" height="100%" fill="white"/></svg></div>
+      <div class="right">
+
+      </div>
+      <div style="padding:10px; padding-left:30px;" class="bottom">
+        <b>HELP</b>
+        (textsize:
+        <button value=16 id='text-size' class='corner'>S</button>
+        <button value=20 id='text-size' class='corner'>M</button>
+        <button value=29 id='text-size' class='corner'>L</button>
+        )
+        <ul id='text'>
+          <li>Make your own box plot</li>
+          <li>Everything is possible, you are the data set!!!</li>
+        </ul>
+     </div>
+    </div>
+  </body>
+</html>
