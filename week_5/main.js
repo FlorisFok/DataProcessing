@@ -275,15 +275,14 @@ txtFile.onreadystatechange = function()
               	    .attr("r", legCirRad)
                     .attr('fill', function(d) { return (c_code(d.name)); });
 
-        // Add last Label of the Third demension
-        ////////////
+        // Add last Label of review
         // Create a scale for the legend text positions (y direction)
         var pos = d3.scaleBand().domain(jdata.meta_data.names).range([stroke_width, height-stroke_width]);
         var r2 = d3.scaleLinear().domain([0, height-stroke_width]).range([3, 10]);
 
         // Create legend element
         var legend = svg.selectAll("legend")
-                    .data(jdata.data) /////////////////////////////////////////
+                    .data(jdata.data)
                     .enter()
 
         // Makes it possible to remap the values of the radius to the
@@ -291,25 +290,12 @@ txtFile.onreadystatechange = function()
            return Math.round((radius-3)*MAX_r/7*0.00001)*100000;
         }
 
-        function insertpoints(num) {
-          if (num >= 1000 && num < 1000000){
-            var str = `${Math.floor(num/1000)}.000`;
-          }
-          else if (num >= 1000000) {
-            var str = `${Math.floor(num/1000000)}.${Math.round((num%1000000)/100000)}00.000`;
-          }
-          else {
-            return num
-          }
-           return str
-        }
-
         // Add the names of the categories to the legend to the right positions
         legend.append("text").attr("x", width + stroke_width*2 + width/3)
                   .attr("y", function(d) { return pos(d.name)+ stroke_width})
                   .text( function(d) { return insertpoints(remap(r2(pos(d.name))))})
 
-        // Make a ugly box
+        // Make a ugly box number 2
         legend.append("rect").attr("x", width + width/3)
                   .attr("width", width/3)
                   .attr("y", 0)
@@ -331,6 +317,7 @@ txtFile.onreadystatechange = function()
             .text("Reviews")
             .attr("class", "right_text");
 
+        // Listen to chnages, and select the right option for change
         document.querySelector('#button').onchange = function(){
           const option = document.querySelector('#button').value;
           console.log(option)
@@ -367,8 +354,23 @@ txtFile.onreadystatechange = function()
           	    .attr("r", function(d) { return r(d.mean_r); })
                 .attr('fill', function(d) { return (c_code(d.name)); });
           }
-        }
+       }
     }
+}
+
+function insertpoints(num) {
+  // Add points to the numbers
+  if (num >= 1000 && num < 1000000){
+    var str = `${Math.floor(num/1000)}.000`;
+  }
+  else if (num >= 1000000) {
+    var str = `${Math.floor(num/1000000)}.
+               ${Math.round((num%1000000)/100000)}00.000`;
+  }
+  else {
+    return num
+  }
+   return str
 }
 
 // Send the GET request
