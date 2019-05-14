@@ -8,6 +8,7 @@ txtFile.onreadystatechange = function()
     if (txtFile.readyState === 4 && txtFile.status == 200)
     {
         const jdata = JSON.parse(txtFile.responseText);
+        console.log(jdata)
 
         // Get meta_data from json
         const MAX =  jdata.meta_data.max;
@@ -41,7 +42,7 @@ txtFile.onreadystatechange = function()
         var y_axis_l = d3.axisRight().scale(y2);
 
         // Create a new SVG in the body, move the entige SVG out of the margins
-        var svg = d3.select("body").append("svg")
+        var svg = d3.select(".two").append("svg")
                       .attr("width", width + margin.left + margin.right)
                       .attr("height", height + margin.top + margin.bottom)
                     .append("g")
@@ -93,6 +94,15 @@ txtFile.onreadystatechange = function()
             .text("#installs")
             .attr("class", "right_text");
 
+        // Add Title
+        svg.append("text")
+            .attr("y", 0 )
+            .attr("x", width / 2)
+            .attr("dy", "-1em")
+            .style("text-anchor", "middle")
+            .text("Top 10 categories of Play store ")
+            .attr("class", "title");
+
         // Add data to the upcomming bars
         var bars = svg.selectAll("rect")
                   .data(jdata.data)
@@ -139,11 +149,11 @@ txtFile.onreadystatechange = function()
         // part two ////////////////////////////////////////////////////////
         // Make the plot smaller
         width = width/2;
-        const rating_start = MAX/2;
+        // const rating_start = MAX/2;
 
         // New plot, new Scales.
         // Log is used for the large data set
-        var x = d3.scaleLinear().domain([rating_start, MAX]).range([0, width]);
+        var x = d3.scaleLinear().domain([0, MAX]).range([0, width]);
         var y = d3.scaleLog().domain([log_start, MAX_i]).range([height, 0]);
         var r = d3.scaleLinear().domain([0, MAX_r]).range([3, 10]);
 
@@ -157,7 +167,7 @@ txtFile.onreadystatechange = function()
         var yAxis = d3.axisLeft().scale(y);
 
         // Select the body to create a new svg element
-        var svg = d3.select("body").append("svg")
+        var svg = d3.select(".one").append("svg")
                     .attr("width", width*2 + margin.left + margin.right)
                     .attr("height", height + margin.top + margin.bottom)
                   .append("g")
@@ -200,6 +210,15 @@ txtFile.onreadystatechange = function()
             .attr("class", "changey")
             .text("Installs");
 
+        // Add Title
+        svg.append("text")
+            .attr("y", 0 )
+            .attr("x", width / 2)
+            .attr("dy", "-1em")
+            .style("text-anchor", "middle")
+            .text("Top 10 categories of Play store")
+            .attr("class", "title");
+
         // When the mouse moves on the SVG, track it
         svg.on('mousemove', function() {
           const coords = d3.mouse(this);
@@ -214,7 +233,7 @@ txtFile.onreadystatechange = function()
 
         // Add the data to the circles to come
         var circ = svg.selectAll("circle")
-                    .data(jdata.data)
+                    .data(jdata.data) ////////////////////////////////////////
                     .enter()
                     .append("circle")
 
@@ -233,7 +252,7 @@ txtFile.onreadystatechange = function()
 
         // Create legend element
         var legend = svg.selectAll("legend")
-                    .data(jdata.data)
+                    .data(jdata.data) /////////////////////////////////////////
                     .enter()
 
         // Add the names of the categories to the legend to the right positions
@@ -257,10 +276,98 @@ txtFile.onreadystatechange = function()
                     .attr('fill', function(d) { return (c_code(d.name)); });
 
         // Add last Label of the Third demension
-        legend.append("text").attr("x", width)
-                .attr('y', height/2 + stroke_width)
-                .text('Radius = #Reviews')
-                .attr("class", "radius")
+        ////////////
+        // Create a scale for the legend text positions (y direction)
+        var pos = d3.scaleBand().domain(jdata.meta_data.names).range([stroke_width, height-stroke_width]);
+        var r2 = d3.scaleLinear().domain([0, height-stroke_width]).range([3, 10]);
+
+        // Create legend element
+        var legend = svg.selectAll("legend")
+                    .data(jdata.data) /////////////////////////////////////////
+                    .enter()
+
+        // Makes it possible to remap the values of the radius to the
+        function remap(radius){
+           return Math.round((radius-3)*MAX_r/7*0.00001)*100000;
+        }
+
+        function insertpoints(num) {
+          if (num >= 1000 && num < 1000000){
+            var str = `${Math.floor(num/1000)}.000`;
+          }
+          else if (num >= 1000000) {
+            var str = `${Math.floor(num/1000000)}.${Math.round((num%1000000)/100000)}00.000`;
+          }
+          else {
+            return num
+          }
+           return str
+        }
+
+        // Add the names of the categories to the legend to the right positions
+        legend.append("text").attr("x", width + stroke_width*2 + width/3)
+                  .attr("y", function(d) { return pos(d.name)+ stroke_width})
+                  .text( function(d) { return insertpoints(remap(r2(pos(d.name))))})
+
+        // Make a ugly box
+        legend.append("rect").attr("x", width + width/3)
+                  .attr("width", width/3)
+                  .attr("y", 0)
+            	    .attr("height", height)
+                  .attr('fill-opacity', 0.0)
+                  .attr('stroke', 'black');
+
+        // Add some circles to the legend
+        legend.append("circle").attr("cx", width + stroke_width + width/3)
+                    .attr("cy", function(d) { return pos(d.name) + stroke_width - legCirRad; })
+              	    .attr("r", function(d) { return r2(pos(d.name))})
+                    .attr('fill', 'black');
+
+        svg.append("text")
+            .attr("y", 0 )
+            .attr("x", width + width/2)
+            .attr("dy", "1em")
+            .style("text-anchor", "middle")
+            .text("Reviews")
+            .attr("class", "right_text");
+
+        document.querySelector('#button').onchange = function(){
+          const option = document.querySelector('#button').value;
+          console.log(option)
+          if (option == 2){
+            svg.selectAll("circle")
+                .data(jdata.data2) // Update with new data
+                .transition()
+                .duration(1000)
+                .attr("x", function(d) { return x(d.mean); })
+                .attr("cx", function(d) { return x(d.mean); })
+                .attr("cy", function(d) { return y(d.mean_i); })
+          	    .attr("r", function(d) { return r(d.mean_r); })
+                .attr('fill', function(d) { return (c_code(d.name)); });
+          }
+          if (option == 1){
+            svg.selectAll("circle")
+                .data(jdata.data) // Update with new data
+                .transition()
+                .duration(1000)
+                .attr("x", function(d) { return x(d.mean); })
+                .attr("cx", function(d) { return x(d.mean); })
+                .attr("cy", function(d) { return y(d.mean_i); })
+          	    .attr("r", function(d) { return r(d.mean_r); })
+                .attr('fill', function(d) { return (c_code(d.name)); });
+          }
+          if (option == 3){
+            svg.selectAll("circle")
+                .data(jdata.data3) // Update with new data
+                .transition()
+                .duration(1000)
+                .attr("x", function(d) { return x(d.mean); })
+                .attr("cx", function(d) { return x(d.mean); })
+                .attr("cy", function(d) { return y(d.mean_i); })
+          	    .attr("r", function(d) { return r(d.mean_r); })
+                .attr('fill', function(d) { return (c_code(d.name)); });
+          }
+        }
     }
 }
 

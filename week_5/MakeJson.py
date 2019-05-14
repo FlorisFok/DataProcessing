@@ -96,31 +96,44 @@ with open('data.json', 'w') as f:
 
 ##### Re write the values to be compatible with D3 ####
 
-data2 = []
-data_list = []
-data_list2 = []
-name_list = []
-for key in data:
-    # Get dict
-    temp = data[key]
-    # Append dict to list of nessecary data
-    data2.append({'name':key.capitalize(),
-                  'mean':temp['mean'][0],
-                  'mean_i':temp['mean'][2],
-                  'mean_r':temp['mean'][1]})
-    # Save some other data for meta data
-    data_list.append(temp['mean'][2])
-    data_list2.append(temp['mean'][1])
-    name_list.append(key.capitalize())
+def get_data(data, item = 'mean'):
+    data2 = []
+    data_list = []
+    data_list2 = []
+    name_list = []
+    for key in data:
+        # Get dict
+        temp = data[key]
+        # Append dict to list of nessecary data
+        data2.append({'name':key.capitalize(),
+                      'mean':temp[item][0],
+                      'mean_i':temp['mean'][2],
+                      'mean_r':temp['mean'][1]})
+        # Save some other data for meta data
+        data_list.append(temp[item][2])
+        data_list2.append(temp[item][1])
+        name_list.append(key.capitalize())
 
-# Create meta data
-max_r = 5 # Rating doesn't get higher than 5
-max_i = max(data_list)
-max_R = max(data_list2)
-meta_data = {'max': max_r,'max_i': max_i, 'max_r':max_R, 'names': name_list, 'title':'Googleplaystore_Data'}
+    # Create meta data
+    max_r = 5 # Rating doesn't get higher than 5
+    max_i = max(data_list)
+    max_R = max(data_list2)
+    meta_data = {'max': max_r,'max_i': max_i, 'max_r':max_R, 'names': name_list, 'title':'Googleplaystore_Data'}
+
+    return data2, meta_data
+
+# Get first data
+data2, meta_data = get_data(data)
 
 # Combine both data
 super_data = {'data':data2, 'meta_data': meta_data}
+
+super_data['data2'], super_data['meta_data2'] = get_data(data, '25%')
+super_data['data3'], super_data['meta_data3'] = get_data(data, '75%')
+
+
+
+
 data_json2 = json.dumps(super_data)
 
 # Save to file
