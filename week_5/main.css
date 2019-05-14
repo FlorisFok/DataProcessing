@@ -1,0 +1,41 @@
+text {
+  font-size: 12px;
+  color: gray;
+}
+
+text.right_text {
+  font-size: 20px;
+  color: green;
+}
+
+text.left_text {
+  font-size: 20px;
+}
+
+text.bottom_text {
+  font-size: 20px;
+}
+
+text.changey {
+  font-size: 20px;
+}
+
+text.changex {
+  font-size: 20px;
+}
+
+text.radius {
+  font-size: 20px;
+}
+
+rect.bar2{
+  fill: green;
+}
+
+rect.bar:hover {
+  fill: yellow;
+}
+
+rect.bar2:hover {
+  fill: purple;
+}
