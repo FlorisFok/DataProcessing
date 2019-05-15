@@ -43,3 +43,7 @@ rect.bar:hover {
 rect.bar2:hover {
   fill: purple;
 }
+
+.choice {
+  padding-left: 25%;
+}
