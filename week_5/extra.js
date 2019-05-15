@@ -259,12 +259,37 @@ function make_plot(jdata, countries_used, AUTO){
             .text("Scatter plot by Floris Fok (12503668)")
             .attr("class", "title");
 
+        svg.append("line")
+            .append("line")
+
+
         // Scales for the mouse coordianates
         var mx = d3.scaleLinear().domain([0, width]).range([0, max_gdp]);
         var my = d3.scaleLinear().domain([height, 0]).range([0, max_teen]);
         // When the mouse moves on the SVG, track it
         svg.on('mousemove', function() {
           const coords = d3.mouse(this);
+          if (coords[0] > width || coords[1] > height){
+            return;
+          }
+          // Mouse tracer, but for some reason its 70 off? can you tell me why...
+          // It rewrites the line every time it moves!
+          let spooky_offset = 70
+          svg.selectAll("line")
+              .data([{'x':coords[0],
+                      'y':coords[1] - height,
+                      'y2':coords[1] - height,
+                      'x2':0},
+                     {'x':coords[0] - spooky_offset,
+                      'y':coords[1] - height,
+                      'y2':0,
+                      'x2':coords[0] - spooky_offset}
+                    ])
+              .attr("x1", function(d) { return d.x;})
+              .attr("y1", function(d) { return d.y;})
+              .attr("x2", function(d) { return d.x2;})
+              .attr("y2", function(d) { return d.y2;});
+
           // Round the coords to multiple of 5 and place the Coords in the label
           var y1 = Math.round(my(coords[1]));
           document.querySelector('text.changey').innerHTML = `Teen Pregnancies [per 1000] = ${y1}`;
