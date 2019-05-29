@@ -1,5 +1,5 @@
 # DataProcessing
 A course part of UvA minor
 
-# week 5
+Latest project on:
 site:  https://florisfok.github.io/ 
