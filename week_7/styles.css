@@ -1,0 +1,60 @@
+body {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  width: 1300px;
+  height: 100px;
+  position: relative;
+}
+
+/* stylesheet for your custom graph */
+
+.states {
+  fill: none;
+  stroke: #fff;
+  stroke-linejoin: round;
+}
+
+.states-choropleth {
+  fill: #ccc;
+}
+
+#tooltip-container {
+  position: absolute;
+  background-color: #fff;
+  color: #000;
+  padding: 10px;
+  border: 1px solid;
+  display: none;
+}
+
+.tooltip_key {
+  font-weight: bold;
+}
+
+.tooltip_value {
+  margin-left: 20px;
+  float: right;
+}
+.column {
+  float: left;
+  width: 50%;
+}
+
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+.left_column{
+  padding-left: 50px;
+}
+.ExtraLegend{
+  padding-left:30px;
+}
+
+#error{
+  color:red;
+}
+#head{
+  padding-left:50px;
+}
